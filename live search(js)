@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>Ajax first</title>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="row">
+
+        <div class="col-lg-12 mb-2">
+          <h2>Search with Ajax</h2>
+        </div>
+        <div class="col-lg-4 mb-2">
+          <input type="text" name="search" id="search09" class="form-control mt-2" placeholder="search">
+
+        </div>
+        <div class="col-lg-10" id="showDatabase">
+          
+        </div>
+      </div>
+    </div>
+    
+
+    
+
+    
+    
+    
+  <script>
+    var search09 = document.getElementById('search09');
+
+search09.addEventListener('keyup', ram);
+
+function ram(){
+	
+	var xhr = new XMLHttpRequest();
+	var searchValue = search09.value;
+	xhr.open("POST", "ajax1.php" , true);
+	xhr.setRequestHeader("content-type", "application/x-www-form-urlencoded");
+
+	xhr.send("sea="+searchValue);
+	xhr.onreadystatechange = function(){
+
+		if(this.readyState == 4 && this.status == 200){
+			document.getElementById('showDatabase').innerHTML = this.responseText;
+		}
+	}
+
+
+}
+  </script>
+  </body>
+</html>
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+searching is done on this page
+
+<?php 
+ $conn = mysqli_connect("localhost", "root", "", "testing");
+
+ if(isset($_POST['sea'])){
+ 	
+ 	$name = $_POST['sea'];
+ 	$sql = "SELECT * FROM students WHERE name LIKE '%$name%' OR city LIKE '$name%'";
+ 	$query = mysqli_query($conn, $sql) or die("select query failed");
+
+ 	if(mysqli_num_rows($query)){
+
+
+ 	
+ 	echo " <table class='table'>
+ 		<tr>
+ 			<th>S. No.</th>
+ 			<th>Name</th>
+ 			<th>Age</th>
+ 			<th>City</th>
+ 		</tr> ";
+ 		$s=1;
+ 	while ($row = mysqli_fetch_assoc($query)) {
+ 		$name = $row['name'];
+ 		$age = $row['age'];
+ 		$city = $row['city'];
+ 	echo "	
+ 		<tr>
+ 			<td>$s</td>
+ 			<td>$name</td>
+ 			<td>$age</td>
+ 			<td>$city</td>
+ 		</tr>
+ 		";
+ 		$s++;
+ 	}
+ 	echo "</table>"; 
+ 	
+ 	
+ 	}else{
+ 		echo "No data";
+ 	}
+
+
+
+ }else{
+ 	echo "not woriking". $_POST['sea'];
+ 	print_r($_POST);
+}
+
+?>
+
